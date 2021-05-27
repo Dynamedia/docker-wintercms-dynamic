@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  wintercms-dynamic:
+    build:
+      context: .
+    image: dynamedia/docker-winter-dynamic:v1.20.0_8.0.x
+    environment:
+      GITHUB_TOKEN: 'xxx'
+      USER_NAME: 'www-data'
+      USER_GROUP: 'www-data'
+      USER_UID: '1000'
+      USER_GID: '1000'
+      CMS_BRANCH: 'develop'
+      CMS_COMMIT_HASH: ''
+      CMS_PULL_ID: '185'
+      CMS_PLUGINS: 'winter.drivers'
+      CMS_ADMIN_PASSWORD: 'password'
+      STORM_BRANCH: 'develop'
+      STORM_COMMIT_HASH: ''
+      STORM_PULL_ID: ''
+    depends_on:
+      - database
+    restart: unless-stopped
+    ports:
+      - 80:80
+    expose:
+      - 80
+  database:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: database
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./.config/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    restart: unless-stopped
