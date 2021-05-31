@@ -24,12 +24,12 @@ install_plugins()
 {
     # If $CMS_PLUGINS is set
     if [ ! -z $CMS_PLUGINS ] ; then
+        echo "Install plugins..."
         IFS=', ' read -r -a PLUGIN_ARRAY <<< "$CMS_PLUGINS"
         for plugin in "${PLUGIN_ARRAY[@]}"
             do
-               sleep 5
-               echo "going to install $plugin"
-               php artisan -vvv plugin:install $plugin
+              echo "going to install $plugin"
+              composer require $plugin
             done
     fi
 }
@@ -38,10 +38,12 @@ install_themes()
 {
     # If $CMS_THEMES is set
     if [ ! -z $CMS_THEMES ] ; then
+        echo "Install themes..."
         IFS=', ' read -r -a THEME_ARRAY <<< "$CMS_THEMES"
         for theme in ${THEME_ARRAY[@]}
             do
-               php artisan theme:install $theme
+              echo "going to install $theme"
+              composer require $theme
             done
     fi
 }
@@ -139,7 +141,6 @@ if [ $DB_UP -eq 1 ] ; then
   php artisan winter:version
   php artisan package:discover
   php artisan winter:passwd admin "$CMS_ADMIN_PASSWORD"
-  echo "Install plugins..."
   install_plugins
   install_themes
 else
